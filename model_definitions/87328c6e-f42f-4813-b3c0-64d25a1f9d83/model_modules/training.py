@@ -4,7 +4,7 @@ from sklearn.pipeline import Pipeline
 from nyoka import xgboost_to_pmml
 from teradataml import create_context
 from teradataml.dataframe.dataframe import DataFrame
-from tdextensions.featurestore import FeatureStore
+from tdfs import FeatureStore
 from aoa.stats import stats
 from aoa.util.artefacts import save_plot
 
