@@ -4,7 +4,7 @@ from teradataml.dataframe.dataframe import DataFrame
 from teradataml.dataframe.copy_to import copy_to_sql
 from aoa.stats import stats
 from aoa.util.artefacts import save_plot
-from tdfs import FeatureStore
+from tdfs.featurestore import FeatureStore
 
 
 import os
