@@ -3,6 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from nyoka import xgboost_to_pmml
 from teradataml import create_context
+from teradataml.context.context import *
 from teradataml.dataframe.dataframe import DataFrame
 from tdfs.featurestore import FeatureStore
 from aoa.stats import stats
