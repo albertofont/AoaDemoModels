@@ -1,0 +1,6 @@
+{
+    "id": "87328c6e-f42f-4813-b3c0-64d25a1f9d83",
+    "name": "Feature Store Python Diabetes Prediction",
+    "description": "XGBoost model using Feature Store",
+    "language": "python"
+}
