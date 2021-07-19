@@ -41,7 +41,7 @@ def evaluate(data_conf, model_conf, **kwargs):
     y_pred = model.predict(test_pdf[model.feature_names])
 
     y_pred_tdf = pd.DataFrame(y_pred, columns=[model.target_name])
-    y_pred_tdf["PatientId"] = test_pdf["PatientId"].values
+    y_pred_tdf[entity] = test_pdf[entity].values
 
     evaluation = {
         'Accuracy': '{:.2f}'.format(metrics.accuracy_score(y_test, y_pred)),
