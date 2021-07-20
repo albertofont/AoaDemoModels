@@ -25,11 +25,10 @@ def evaluate(data_conf, model_conf, **kwargs):
 
     fs = FeatureStore(get_connection(), data_conf['feature_store'])
 
-    entity = data_conf['entity']
     test_dataset_instance_date = data_conf['instance_date']
 
     # read test dataset from Feature Store and convert to Pandas Dataframe
-    test_df = fs.get_featureset_df(entity, test_dataset_instance_date, model.feature_names + [model.target_name])
+    test_df = fs.get_featureset_df(model.entity, test_dataset_instance_date, model.feature_names + [model.target_name])
     test_df = test_df.drop(['feature_date'], axis = 1)
 
     test_pdf = test_df.to_pandas()
@@ -41,7 +40,7 @@ def evaluate(data_conf, model_conf, **kwargs):
     y_pred = model.predict(test_pdf[model.feature_names])
 
     y_pred_tdf = pd.DataFrame(y_pred, columns=[model.target_name])
-    y_pred_tdf[entity] = test_pdf[entity].values
+    y_pred_tdf[model.entity] = test_pdf.index.values
 
     evaluation = {
         'Accuracy': '{:.2f}'.format(metrics.accuracy_score(y_test, y_pred)),

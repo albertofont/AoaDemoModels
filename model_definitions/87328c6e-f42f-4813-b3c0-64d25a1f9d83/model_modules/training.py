@@ -46,6 +46,7 @@ def train(data_conf, model_conf, **kwargs):
     # xgboost saves feature names but lets store on pipeline for easy access later
     model.feature_names = feature_names
     model.target_name = target_name
+    model.entity = entity
 
     model.fit(X_train, y_train)
 
