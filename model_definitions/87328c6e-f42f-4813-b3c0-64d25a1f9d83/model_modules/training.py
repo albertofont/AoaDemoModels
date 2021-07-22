@@ -30,7 +30,6 @@ def train(data_conf, model_conf, **kwargs):
 
     # read training dataset from Feature Store and convert to Pandas Dataframe
     train_df = fs.get_featureset_df(entity, training_dataset_instance_date, feature_names + [target_name])
-    train_df = train_df.drop(['feature_date'], axis = 1)
     train_pdf = train_df.to_pandas()
 
     # split data into X and y

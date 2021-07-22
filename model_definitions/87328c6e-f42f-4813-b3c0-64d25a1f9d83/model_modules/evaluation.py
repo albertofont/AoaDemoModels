@@ -29,8 +29,6 @@ def evaluate(data_conf, model_conf, **kwargs):
 
     # read test dataset from Feature Store and convert to Pandas Dataframe
     test_df = fs.get_featureset_df(model.entity, test_dataset_instance_date, model.feature_names + [model.target_name])
-    test_df = test_df.drop(['feature_date'], axis = 1)
-
     test_pdf = test_df.to_pandas()
 
     X_test = test_pdf[model.feature_names]
