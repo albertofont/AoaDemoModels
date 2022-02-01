@@ -25,7 +25,7 @@ from pmdarima.arima import auto_arima
 from pmdarima.arima import OCSBTest 
 from statsmodels.tsa.arima_model import ARIMA
 import seaborn as sns
-import yfinance
+#import yfinance
 import warnings
 
 
