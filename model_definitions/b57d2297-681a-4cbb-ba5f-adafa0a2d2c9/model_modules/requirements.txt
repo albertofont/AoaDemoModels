@@ -5,3 +5,4 @@ matplotlib>=2.2.2
 teradataml>=17.0.0.0
 nyoka>=4.3.0
 pmdarima==1.8.4
+seaborn==0.11.2
