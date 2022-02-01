@@ -1,5 +1,7 @@
 {
   "hyperParameters": {
-    "n_neighbors": 3
+    "m": 5,
+    "max_p":5,
+    "max_q":5
   }
 }

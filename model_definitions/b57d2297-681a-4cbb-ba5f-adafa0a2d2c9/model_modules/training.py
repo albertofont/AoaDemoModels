@@ -49,7 +49,11 @@ def train(data_conf, model_conf, **kwargs):
     raw_data = yfinance.download (tickers = "VOW3.DE, PAH3.DE, BMW.DE", interval = "1d", group_by = 'ticker',
                               auto_adjust = True, treads = True)
     
-    df = raw_data.copy()
+    df = DataFrame(data_conf["table"])
+    df = df.to_pandas()
+    df.set_index("DATESTAMP", inplace=True)
+    print(df.tail(1))
+    #df = raw_data.copy()
     
     # Hyperparameters
     
@@ -70,20 +74,17 @@ def train(data_conf, model_conf, **kwargs):
     
     # Pre-processing the Data
     # Extracting Closing Prices
-    df['vol'] = df['VOW3.DE'].Close
-    df['por'] = df['PAH3.DE'].Close
-    df['bmw'] = df['BMW.DE'].Close
-
+    df['vol'] = df['VOW3.DE_Close']
+    df['por'] = df['PAH3.DE_Close']
+    df['bmw'] = df['BMW.DE_Close']
     # Creating Returns
     df['ret_vol'] = df['vol'].pct_change(1).mul(100)
     df['ret_por'] = df['por'].pct_change(1).mul(100)
     df['ret_bmw'] = df['bmw'].pct_change(1).mul(100)
-
-
     # Extracting Volume
-    df['q_vol'] = df['VOW3.DE'].Volume
-    df['q_por'] = df['PAH3.DE'].Volume
-    df['q_bmw'] = df['BMW.DE'].Volume
+    df['q_vol'] = df['VOW3.DE_Volume']
+    df['q_por'] = df['PAH3.DE_Volume']
+    df['q_bmw'] = df['BMW.DE_Volume']
     
     # split data into X and y
     #X_train = train_df.drop(target_name, 1)
