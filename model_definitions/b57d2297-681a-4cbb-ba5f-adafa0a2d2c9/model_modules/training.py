@@ -46,8 +46,8 @@ def train(data_conf, model_conf, **kwargs):
     #train_df = train_df.select([feature_names + [target_name]])
     #train_df = train_df.to_pandas()
 
-    raw_data = yfinance.download (tickers = "VOW3.DE, PAH3.DE, BMW.DE", interval = "1d", group_by = 'ticker',
-                              auto_adjust = True, treads = True)
+    #raw_data = yfinance.download (tickers = "VOW3.DE, PAH3.DE, BMW.DE", interval = "1d", group_by = 'ticker',
+    #                          auto_adjust = True, treads = True)
     
     df = DataFrame(data_conf["table"])
     df = df.to_pandas()
@@ -57,21 +57,21 @@ def train(data_conf, model_conf, **kwargs):
     
     # Hyperparameters
     
-        # Starting Date
-    start_date = "2009-04-05" 
-
-        # First Official Announcement - 49.9%
-    ann_1 = "2009-12-09" 
-
+    # Starting Date
+    #start_date = "2009-04-05" 
+    start_date = hyperparams["start_date"]
+    # First Official Announcement - 49.9%
+    #ann_1 = "2009-12-09" 
+    ann_1 = hyperparams["ann_1"]
     # Second Official Announcement - 51.1%
-    ann_2 = "2012-07-05" 
-
+    #ann_2 = "2012-07-05" 
+    ann_2 = hyperparams["ann_2"]
     #Ending Date
-    end_date = "2014-01-01"
-
+    #end_date = "2014-01-01"
+    end_date = hyperparams["end_date"]
     # Dieselgate
-    d_gate = '2015-09-20' 
-    
+    #d_gate = '2015-09-20' 
+    d_gate = hyperparams["d_gate"]
     # Pre-processing the Data
     # Extracting Closing Prices
     df['vol'] = df['VOW3.DE_Close']
@@ -93,7 +93,7 @@ def train(data_conf, model_conf, **kwargs):
     print("Starting training...")
 
     mod_pr_pre_vol = auto_arima(df.vol[start_date:ann_1], exogenous = df[['por','bmw']][start_date:ann_1],
-                            m = 5, max_p = 5, max_q = 5)
+                            m = hyperparams["m"], max_p = hyperparams["max_p"], max_q = hyperparams["max_q"])
 
     # fit model to training data
     #model = Pipeline([('scaler', MinMaxScaler()),

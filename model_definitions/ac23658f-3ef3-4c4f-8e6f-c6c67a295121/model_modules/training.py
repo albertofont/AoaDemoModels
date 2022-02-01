@@ -13,7 +13,7 @@ from statsmodels.tsa.arima.model import ARIMA
 import matplotlib.pylab as plt
 
 import joblib
-import os
+import osf
 
 
 def train(data_conf, model_conf, **kwargs):
