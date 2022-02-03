@@ -58,8 +58,11 @@ def train(data_conf, model_conf, **kwargs):
     model["xgb"].get_booster().feature_names = feature_names
     plot_importance(model["xgb"].get_booster(), max_num_features=10)
     save_plot("feature_importance.png")
+    
 
+    
     feature_importance = model["xgb"].get_booster().get_score(importance_type="weight")
+    print(feature_importance)
     stats.record_training_stats(train_df,
                        features=feature_names,
                        predictors=[target_name],

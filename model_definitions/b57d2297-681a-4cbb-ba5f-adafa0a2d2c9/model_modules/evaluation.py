@@ -96,7 +96,7 @@ def evaluate(data_conf, model_conf, **kwargs):
 #    save_plot('ROC Curve')
 
     # xgboost has its own feature importance plot support but lets use shap as explainability example
-    import shap
+  #  import shap
 
  #   shap_explainer = shap.TreeExplainer(model['xgb'])
  #   shap_values = shap_explainer.shap_values(X_test)

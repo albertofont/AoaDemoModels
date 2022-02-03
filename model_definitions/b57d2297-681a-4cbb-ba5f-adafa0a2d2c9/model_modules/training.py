@@ -233,3 +233,30 @@ def train(data_conf, model_conf, **kwargs):
     #                   categorical=[target_name],
     #                   importance=feature_importance,
     #                   category_labels={target_name: {0: "false", 1: "true"}})
+    
+    #import shap
+    #mapper = model['mapper']
+    #shap_explainer = shap.TreeExplainer(model['regressor'])
+    #X_train = pd.DataFrame(mapper.transform(X_train), columns=model.feature_names_tr)
+    #X_shap = shap.sample(X_train, 100)
+    #shap_values = shap_explainer.shap_values(X_shap)
+    #feature_importances = pd.DataFrame(list(zip(model.feature_names_tr,
+    #                                         np.abs(shap_values).mean(0))),
+    #                               columns=['col_name', 'feature_importance_vals'])
+    #feature_importances = feature_importances.set_index("col_name").T.to_dict(orient='records')[0]
+    
+    #category_labels_overrides = {
+    #    "emailer_for_promotion": {0: "false", 1: "true"},
+    #    "homepage_featured": {0: "Not featured", 1: "Featured"}
+    #}
+    
+    #mod_pr_pre_vol.categorical=[]
+    #stats.record_training_stats(train_df,
+    #                   features=model.feature_names,
+    #                   predictors=model.target_name,
+    #                   categorical=mod_pr_pre_vol.categorical,
+    #                   importance=feature_importances,
+    #                   category_labels=model.category_labels_overrides)
+
+    #remove_context()
+    print("All done!")
