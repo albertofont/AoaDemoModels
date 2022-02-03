@@ -1,0 +1,11 @@
+Augmented Dickey-Fuller Test: 
+ADF test statistic        -1.071372
+p-value                    0.726353
+# lags used               34.000000
+# observations          5882.000000
+critical value (1%)       -3.431462
+critical value (5%)       -2.862032
+critical value (10%)      -2.567032
+Weak evidence against the null hypothesis
+Fail to reject the null hypothesis
+Data has a unit root and is non-stationary

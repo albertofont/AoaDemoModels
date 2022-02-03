@@ -57,6 +57,10 @@ def evaluate(data_conf, model_conf, **kwargs):
     test_df['por'] = test_df['PAH3.DE_Close']
     test_df['bmw'] = test_df['BMW.DE_Close']
     
+    # Assigning the Frequency and Filling NA Values
+    test_df = test_df.asfreq('b')
+    test_df = test_df.fillna(method='bfill')
+    
     X_test = test_df[mod_pr_pre_vol.feature_names]
     y_test = test_df[mod_pr_pre_vol.target_name]
 

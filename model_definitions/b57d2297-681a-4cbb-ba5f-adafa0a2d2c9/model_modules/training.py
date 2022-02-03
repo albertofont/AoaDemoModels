@@ -7,6 +7,11 @@ from teradataml.dataframe.dataframe import DataFrame
 from aoa.stats import stats
 from aoa.util.artefacts import save_plot
 from statsmodels.graphics.tsaplots import plot_acf,plot_pacf
+from statsmodels.graphics.tsaplots import month_plot,quarter_plot
+from statsmodels.tsa.seasonal import seasonal_decompose
+import sys
+from io import StringIO
+
 
 import joblib
 import os
@@ -25,10 +30,35 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from pmdarima.arima import auto_arima
 from pmdarima.arima import OCSBTest 
 from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.stattools import adfuller
 import seaborn as sns
 #import yfinance
 import warnings
 
+
+def adf_test(series,title=''):
+    """
+    Pass in a time series and an optional title, returns an ADF report
+    """
+    print(f'Augmented Dickey-Fuller Test: {title}')
+    result = adfuller(series.dropna(),autolag='AIC') # .dropna() handles differenced data
+    
+    labels = ['ADF test statistic','p-value','# lags used','# observations']
+    out = pd.Series(result[0:4],index=labels)
+
+    for key,val in result[4].items():
+        out[f'critical value ({key})']=val
+        
+    print(out.to_string())          # .to_string() removes the line "dtype: float64"
+    
+    if result[1] <= 0.05:
+        print("Strong evidence against the null hypothesis")
+        print("Reject the null hypothesis")
+        print("Data has no unit root and is stationary")
+    else:
+        print("Weak evidence against the null hypothesis")
+        print("Fail to reject the null hypothesis")
+        print("Data has a unit root and is non-stationary")
 
 def train(data_conf, model_conf, **kwargs):
     hyperparams = model_conf["hyperParameters"]
@@ -89,28 +119,46 @@ def train(data_conf, model_conf, **kwargs):
     df['vol'] = df['VOW3.DE_Close']
     df['por'] = df['PAH3.DE_Close']
     df['bmw'] = df['BMW.DE_Close']
+    # Assigning the Frequency and Filling NA Values
+    df = df.asfreq('b')
+    df = df.fillna(method='bfill')
     
     # split data into X and y
     #X_train = train_df.drop(target_name, 1)
     #y_train = train_df[target_name]
 
+    print("Performiing DF Test...")
+    stdout_backup = sys.stdout
+    sys.stdout = string_buffer = StringIO()
+    adf_test(df['vol'])
+    with open("artifacts/output/DFtest.txt", "w") as my_file:
+        my_file.write(string_buffer.getvalue())    # write a line to the file
+    sys.stdout = stdout_backup 
+    print("Finished test")
+    
     print("Starting training...")
-
+    stdout_backup = sys.stdout
+    sys.stdout = string_buffer = StringIO()
     mod_pr_pre_vol = auto_arima(df.vol[start_date:ann_1], exogenous = df[['por','bmw']][start_date:ann_1],
-                            m = hyperparams["m"], max_p = hyperparams["max_p"], max_q = hyperparams["max_q"])
+                            m = hyperparams["m"], max_p = hyperparams["max_p"], max_q = hyperparams["max_q"],
+                            d=None, trace=True,
+                            error_action='ignore',   
+                            suppress_warnings=True,  
+                            stepwise=True)
 
     # fit model to training data
     #model = Pipeline([('scaler', MinMaxScaler()),
     #                  ('xgb', XGBClassifier(eta=hyperparams["eta"],
     #                                        max_depth=hyperparams["max_depth"]))])
-    
+    with open("artifacts/output/summary.txt", "w") as my_file:
+        my_file.write(string_buffer.getvalue())    # write a line to the file
+    sys.stdout = stdout_backup 
     
     # xgboost saves feature names but lets store on pipeline for easy access later
     mod_pr_pre_vol.feature_names = ['por','bmw']
     mod_pr_pre_vol.target_name = 'vol'
 
     #model.fit(X_train, y_train)
-
     print("Finished training")
 
     # export model artefacts
@@ -160,7 +208,23 @@ def train(data_conf, model_conf, **kwargs):
     plot_acf(df['vol'],lags=lags);
     
     save_plot("PartialAutocorrelation_Stocks_VOL.png")
+        
+    plt.rc('figure', figsize=(12, 7))
+    #plt.text(0.01, 0.05, str(model.summary()), {'fontsize': 12}) old approach
+    plt.text(0.01, 0.05, str(mod_pr_pre_vol.summary()), {'fontsize': 12}, fontproperties = 'monospace') # approach improved by OP -> monospace!
+    plt.axis('off')
+    plt.tight_layout()
+    save_plot('Model_Summary')
+    #plt.savefig('output.png')
     
+    dfq = df['vol'].resample(rule='Q').mean()
+    quarter_plot(dfq);
+    save_plot('Quarter_plot')
+
+    
+    result = seasonal_decompose(df['vol'], model='additive')  # model='add' also works
+    result.plot();
+    save_plot('Sesasonal_decompose')
     
     #feature_importance = model["xgb"].get_booster().get_score(importance_type="weight")
     #stats.record_training_stats(train_df,
