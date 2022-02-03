@@ -2,7 +2,7 @@ from xgboost import XGBClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from nyoka import xgboost_to_pmml
-from teradataml import create_context
+from teradataml import create_context, remove_context
 from teradataml.dataframe.dataframe import DataFrame
 from aoa.stats import stats
 from aoa.util.artefacts import save_plot
@@ -38,8 +38,8 @@ def train(data_conf, model_conf, **kwargs):
 
 
     
-    feature_names = ["NumTimesPrg", "PlGlcConc", "BloodP", "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc", "Age"]
-    target_name = "HasDiabetes"
+    #feature_names = ["NumTimesPrg", "PlGlcConc", "BloodP", "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc", "Age"]
+    #target_name = "HasDiabetes"
 
     # read training dataset from Teradata and convert to pandas
     #train_df = DataFrame(data_conf["table"])
@@ -51,7 +51,10 @@ def train(data_conf, model_conf, **kwargs):
     
     df = DataFrame(data_conf["table"])
     df = df.to_pandas()
+    remove_context()
     df.set_index("DATESTAMP", inplace=True)
+
+    print(df.head(1))
     print(df.tail(1))
     #df = raw_data.copy()
     
@@ -82,9 +85,9 @@ def train(data_conf, model_conf, **kwargs):
     df['ret_por'] = df['por'].pct_change(1).mul(100)
     df['ret_bmw'] = df['bmw'].pct_change(1).mul(100)
     # Extracting Volume
-    df['q_vol'] = df['VOW3.DE_Volume']
-    df['q_por'] = df['PAH3.DE_Volume']
-    df['q_bmw'] = df['BMW.DE_Volume']
+    df['vol'] = df['VOW3.DE_Close']
+    df['por'] = df['PAH3.DE_Close']
+    df['bmw'] = df['BMW.DE_Close']
     
     # split data into X and y
     #X_train = train_df.drop(target_name, 1)
