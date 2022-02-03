@@ -6,6 +6,7 @@ from teradataml import create_context, remove_context
 from teradataml.dataframe.dataframe import DataFrame
 from aoa.stats import stats
 from aoa.util.artefacts import save_plot
+from statsmodels.graphics.tsaplots import plot_acf,plot_pacf
 
 import joblib
 import os
@@ -127,6 +128,39 @@ def train(data_conf, model_conf, **kwargs):
 
     mod_pr_pre_vol.plot_diagnostics(figsize=(15,15));
     save_plot("diagnostics.png")
+    
+    df['vol'][start_date:ann_1].plot(figsize= (20,8), color = "#3386FF")
+    df['por'][start_date:ann_1].plot(color = "#33FF8F")
+    df['bmw'][start_date:ann_1].plot(color = "#DFD22D")
+
+    df['vol'][ann_1:ann_2].plot(color = "#2665BF")
+    df['por'][ann_1:ann_2].plot(color = "#26BF6B")
+    df['bmw'][ann_1:ann_2].plot(color = "#9F9620")
+
+    df['vol'][ann_2:end_date].plot(color = "#1A4380")
+    df['por'][ann_2:end_date].plot(color = "#1A8048")
+    df['bmw'][ann_2:end_date].plot(color = "#605A13")
+
+    df['vol'][end_date:].plot(color = "#0D2240")
+    df['por'][end_date:].plot(color = "#0D4024")
+    df['bmw'][end_date:].plot(color = "#403C0D")
+
+    plt.legend(['Volkswagen','Porsche','BMW'])
+
+    save_plot("Stocks_VOL_POR_BMW.png")
+    
+    title = 'Autocorrelation_Stocks_VOL'
+    lags = 40
+    plot_acf(df['vol'],lags=lags);
+    
+    save_plot("Autocorrelation_Stocks_VOL.png")
+
+    title = 'PartialAutocorrelation_Stocks_VOL'
+    lags = 40
+    plot_acf(df['vol'],lags=lags);
+    
+    save_plot("PartialAutocorrelation_Stocks_VOL.png")
+    
     
     #feature_importance = model["xgb"].get_booster().get_score(importance_type="weight")
     #stats.record_training_stats(train_df,

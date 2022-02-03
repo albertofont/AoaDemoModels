@@ -82,7 +82,7 @@ def evaluate(data_conf, model_conf, **kwargs):
     with open("artifacts/output/metrics.json", "w+") as f:
         json.dump(evaluation, f)
 
-    test_df['vol'].plot(figsize = (20,8),label='TEST',legend=True)
+    test_df['vol'].plot(label='TEST',legend=True)
     df_auto_pred_pr.squeeze().plot(label='PRED',legend=True)
     
     #metrics.plot_confusion_matrix(model, X_test, y_test)
